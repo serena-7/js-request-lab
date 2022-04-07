@@ -10,7 +10,7 @@
 */
 
 // CODE HERE
-
+const sayHelloButton = document.querySelector('#say-hello-button');
 
 // PROBLEM 2
 /*
@@ -20,7 +20,9 @@
 */
 
 // CODE HERE
-
+sayHelloButton.addEventListener("mouseover", (event) => {
+    event.target.style.backgroundColor = "black";
+})
 
 // PROBLEM 3
 /*
@@ -33,6 +35,9 @@
 
 // CODE HERE
 
+sayHelloButton.addEventListener("mouseout", (event) =>{
+    event.target.style.backgroundColor = "#EFEFEF"
+})
 
 // PROBLEM 4
 /*
@@ -53,7 +58,7 @@ const sayHello = () => {
 // DO NOT EDIT FUNCTION
 
 // CODE HERE
-
+sayHelloButton.addEventListener('click',sayHello);
 
 // PROBLEM 5 
 /*
@@ -65,9 +70,22 @@ const sayHello = () => {
     
     Handle the promise that's returned with a .then, which you should pass a callback function to. Inside the callback function, console.log the response's data (in the intermediate instructions we'll come back to this function and add HTML).
 */ 
+const baseURL = `http://localhost:3000`;
 
 const ohMy = () => {
     // YOUR CODE HERE
+    axios.get(`${baseURL}/animals`)
+        .then(res => {
+            for(let i = 0; i < res.data.length; i++){
+                const newElement = document.createElement('p');
+                newElement.textContent = res.data[i];
+                document.querySelector('body').appendChild(newElement);
+            }
+            // console.log(res.data);
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }
 
 document.getElementById('animals-button').addEventListener('click', ohMy)
@@ -86,9 +104,19 @@ document.getElementById('animals-button').addEventListener('click', ohMy)
     We'll be updating this function in the next problem.
 */
 
-const repeatMyParam = () => {
+const repeatMyParam = (event) => {
     //YOUR CODE HERE
+    axios.get(`${baseURL}/repeat/${event.target.id}`)
+        .then(res => {
+            document.getElementById('repeat-text').textContent = res.data;
+            console.log(res.data);
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }
+
+document.getElementById('repeat-button').addEventListener('click',repeatMyParam);
 
 // PROBLEM 7
 /*
@@ -111,8 +139,17 @@ const repeatMyParam = () => {
 */
 
 // CODE HERE
+const queryRequest = (event) => {
+    axios.get(`${baseURL}/query-test?animal=lion`)
+        .then(res => {
+            console.log(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
 
-
+document.getElementById('query-button').addEventListener('click',queryRequest);
 
 ////////////////
 //INTERMEDIATE//
@@ -164,3 +201,25 @@ const repeatMyParam = () => {
 */
 
 // CODE HERE 
+const createFood = (event) => {
+    event.preventDefault();
+    foodInput = document.querySelector('input');
+    const body = {
+        newFood: foodInput.value
+    }
+    axios.post(`${baseURL}/food`, body)
+        .then(res => {
+            for(let i = 0; i < res.data.length; i++){
+                const newElement = document.createElement('p');
+                newElement.textContent = res.data[i];
+                document.querySelector('body').appendChild(newElement);
+            }
+            // console.log(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    foodInput.value = '';
+}
+
+document.querySelector('form').addEventListener('submit',createFood);
